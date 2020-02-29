@@ -21,7 +21,6 @@ public class Fighter {
     @Column(name = "id")
     private Long id;
 
-    //    @Builder.Default
     @Column(name = "name")
     String name = "Незванный Гость";
 

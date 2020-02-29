@@ -2,10 +2,11 @@ package kz.one.lab.lesson4.rest;
 
 import io.swagger.annotations.ApiOperation;
 import kz.one.lab.lesson4.entity.Arena;
+import kz.one.lab.lesson4.entity.DTO_all_arena_figther;
 import kz.one.lab.lesson4.entity.Fighter;
 import kz.one.lab.lesson4.repositories.ArenaRepository;
 import kz.one.lab.lesson4.repositories.FighterRepository;
-import kz.one.lab.lesson4.services.CheckingDopingService;
+import kz.one.lab.lesson4.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,13 @@ public class FightController {
     FighterRepository fighterRepository;
 
     @Autowired
+    FigtherService figtherService;
+
+    @Autowired
+    AddArenaService addArenaService ;
+
+
+    @Autowired
     Arena arena;
 
     @Autowired
@@ -41,82 +49,58 @@ public class FightController {
 
 
 
-/////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
     @ApiOperation("Add Arena")
     @PutMapping(value = "arena" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Arena> addArena(@RequestParam(name = "id") Long id,
+    public List<Arena> addArenaa(@RequestParam(name = "id") Long id,
                             @RequestParam(name = "name") String name) {
-            Arena  arena_add = new Arena( null , name , null) ;
-            arenaRepository.save(arena_add) ;
-            List<Arena> arenaALl = arenaRepository.findAll();
-            return arenaALl ;
+        return  addArenaService.addArena(id , name);
+
     }
 ///////////////////////////////////////////////////////////////////
         @ApiOperation("Delete Arena")
     @PutMapping(value = "delete" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Arena> deleteArena(@RequestParam(name = "id") Long id,
+    public List<Arena> deleteArenaa(@RequestParam(name = "id") Long id,
                                    @RequestParam(name = "name") String name){
-        arenaRepository.deleteById(id);
-        List<Arena> arenaALl = arenaRepository.findAll();
-        return arenaALl ;
-    }
+
+
+        return addArenaService.deleteArena(id ,name ) ;
+
+}
 /////////////////////////////////////////
     @ApiOperation("Add to list fighter")
     @PutMapping(value = "addToFighter" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Fighter> Add_To_fighter(@RequestBody Fighter fighter) {
-        fighterRepository.save(fighter);
-        List<Fighter> fighters = fighterRepository.findAll();
-        return fighters;
+    public List<Fighter> Add_To_fightere(@RequestBody Fighter fighter) {
+
+
+        return figtherService.Add_To_fighter(fighter) ;
     }
-    ///////////////////////
-//    @ApiOperation("Add fighter to the Arena")
-//   @PutMapping(value = "FighterToArena" , produces = MediaType.APPLICATION_JSON_VALUE)
 
-
-
-
-//    public List<Arena> FighterToArena(@RequestBody Fighter fighter , @RequestBody Arena arena)
-//    {
-//        Arena arena1 = arenaRepository.findById(arena.getId()).get();
-//        Fighter fighter1 = fighterRepository.findById(fighter.getId()).get() ;
-//        List<Fighter> fighters =arena1.getFighters();
-//        arena1.setFighters(fighters);
-//           arenaRepository.save(arena1) ;
-//        List<Arena> arenaALl = arenaRepository.findAll();
-//        return arenaALl ;}
-////////////////////////////////////////////////////////////////////////////
 
     @ApiOperation("Add fighter to the Arena")
     @PutMapping(value = "FighterToArena" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Arena> FighterToArena(@RequestParam(name = "id_Arena") Long Arena_Id,
-                                      @RequestParam(name = "id_Fighter") Long Fighter_Id)
 
-    {
-        Arena arena1 = arenaRepository.findById(Arena_Id).get();
-        Fighter fighter1 = fighterRepository.findById(Fighter_Id).get() ;
-        List<Fighter> fighters =arena1.getFighters();
-       // arena1.setFighters(fighters);
-        fighters.add(fighter1);
-        arena1.setFighters(fighters);
-        arenaRepository.save(arena1) ;
-        List<Arena> arenaALl = arenaRepository.findAll();
-        return arenaALl ;
+    public List<Arena> AddToArenaa(@RequestBody DTO_all_arena_figther DTO_obj){
 
-    }
-@ApiOperation("Add Fighter")
-    @PutMapping(value = "fight", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Fighter> helloOneLab(@RequestBody Fighter fighter)
-    {
-        Fighter fig = fighterRepository.save(fighter) ;
+        return figtherService.FighterToArena(DTO_obj);
+    };
 
 
-//        arena.getFighters().add(fighter) ;
 
-
-        log.info("test"+arena.getFighters().toString());
-
-        return new ResponseEntity(fig, HttpStatus.OK);
-    }
+//@ApiOperation("Add Fighter")
+//    @PutMapping(value = "fight", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Fighter> helloOneLab(@RequestBody Fighter fighter)
+//    {
+//        Fighter fig = fighterRepository.save(fighter) ;
+//
+//
+////        arena.getFighters().add(fighter) ;
+//
+//
+//        log.info("test"+arena.getFighters().toString());
+//
+//        return new ResponseEntity(fig, HttpStatus.OK);
+//    }
 
 
 
